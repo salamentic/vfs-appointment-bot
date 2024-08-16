@@ -1,4 +1,3 @@
-import json
 import argparse
 import time
 import logging
@@ -55,7 +54,7 @@ class VfsBot(ABC):
 
         # Configuration values
         try:
-            browser_type = get_config_value("browser", "type", "webkit")
+            browser_type = get_config_value("browser", "type", "chromium")
             headless_mode = get_config_value("browser", "headless", "False")
             url_key = self.source_country_code + "-" + self.destination_country_code
             vfs_url = get_config_value("vfs-url", url_key)
@@ -68,7 +67,7 @@ class VfsBot(ABC):
 
         appointment_params = self.get_appointment_params(args)
 
-        # Launch browser and perform actions
+        # Settings to use on the launched browser to mimic real sessions
         args=[
             '--disable-blink-features=AutomationControlled',
             '--disable-infobars',
@@ -81,7 +80,7 @@ class VfsBot(ABC):
         ]
         
         with sync_playwright() as p:
-            browser = getattr(p, "chromium").launch_persistent_context(
+            browser = getattr(p, browser_type).launch_persistent_context(
                 user_data_dir="./user_data",
                 headless=False,
                 slow_mo=50,
@@ -94,7 +93,10 @@ class VfsBot(ABC):
 
             page.goto(vfs_url)
             
-            #self.pre_login_steps(page)
+            try:
+                self.pre_login_steps(page)
+            except:
+                logging.warning("Cookies probably already rejected in previous session.")
 
             try:
                 self.login(page, email_id, password)

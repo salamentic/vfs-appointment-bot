@@ -68,15 +68,12 @@ class VfsBotJp(VfsBot):
         email_input = page.locator("#email")
         password_input = page.locator("#password")
 
-        print("Logging in")
-
         # Viewport on which cloudflare bypass is calibrated on
         cloudflare_viewport = {"width": 1920, "height": 1080}
         original_viewport = page.evaluate("() => ({ width: window.innerWidth, height: window.innerHeight })")
 
         # Flag to see if change needs to be made
         mod_viewport_flag = original_viewport != cloudflare_viewport
-        print(mod_viewport_flag)
 
         # Only change the viewport if it is not the intended dimensions
         if mod_viewport_flag:
