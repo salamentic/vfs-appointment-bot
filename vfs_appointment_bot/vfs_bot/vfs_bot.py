@@ -1,17 +1,20 @@
+import json
 import argparse
+import time
 import logging
 from abc import ABC, abstractmethod
 from typing import Dict, List
 
-import playwright
-from playwright.sync_api import sync_playwright
-from playwright_stealth import stealth_sync
+#import playwright
+from undetected_playwright.sync_api import sync_playwright
+#from playwright.sync_api import sync_playwright
+#from playwright_stealth import stealth_sync
+import undetected_playwright as playwright
 
 from vfs_appointment_bot.utils.config_reader import get_config_value
 from vfs_appointment_bot.notification.notification_client_factory import (
     get_notification_client,
 )
-
 
 class LoginError(Exception):
     """Exception raised when login fails."""
@@ -56,8 +59,8 @@ class VfsBot(ABC):
 
         # Configuration values
         try:
-            browser_type = get_config_value("browser", "type", "firefox")
-            headless_mode = get_config_value("browser", "headless", "True")
+            browser_type = get_config_value("browser", "type", "webkit")
+            headless_mode = get_config_value("browser", "headless", "False")
             url_key = self.source_country_code + "-" + self.destination_country_code
             vfs_url = get_config_value("vfs-url", url_key)
         except KeyError as e:
@@ -70,14 +73,38 @@ class VfsBot(ABC):
         appointment_params = self.get_appointment_params(args)
 
         # Launch browser and perform actions
+        args=[
+            '--disable-blink-features=AutomationControlled',
+            '--disable-infobars',
+            '--no-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-setuid-sandbox',
+            '--disable-gpu',
+            '--disable-extensions',
+            '--disable-software-rasterizer',
+        ]
+        
         with sync_playwright() as p:
-            browser = getattr(p, browser_type).launch(
-                headless=headless_mode in ("True", "true")
+            browser = getattr(p, "chromium").launch_persistent_context(
+                user_data_dir="./user_data",
+                headless=False,
+                slow_mo=50,
+                viewport={"width": 1920, "height": 1080},
+                locale="en-US",
             )
+            # Load cookies
+            #with open('cookies(3).json', 'r') as f:
+            #    cookies = json.load(f)
+            #    browser.add_cookies(cookies)
+
             page = browser.new_page()
-            stealth_sync(page)
+            #page.evaluate("localStorage.clear()")
+            #page.evaluate("sessionStorage.clear()")
 
             page.goto(vfs_url)
+            page.wait_for_load_state('networkidle')
+            
+            # Click the checkbox
             self.pre_login_steps(page)
 
             try:
@@ -103,6 +130,7 @@ class VfsBot(ABC):
                     appointment_found = True
                 else:
                     # Log no appointments found
+                    self.notify_no_appointment()
                     logging.info(
                         "\033[1;33mNo appointments found for the specified criteria.\033[0m"
                     )
@@ -136,6 +164,23 @@ class VfsBot(ABC):
                 key_name = key.replace("_", " ")
                 appointment_params[key] = input(f"Enter the {key_name}: ")
         return appointment_params
+
+    def notify_no_appointment(self):
+        channels = get_config_value("notification", "channels")
+        message = f"No appointments at {time.now()}"
+        if len(channels) == 0:
+            logging.warning(
+                "No notification channels configured. Skipping notification."
+            )
+            return
+
+        for channel in channels.split(","):
+            client = get_notification_client(channel)
+            try:
+                client.send_notification(message)
+            except Exception as e:
+                logging.error(f"Failed to send {channel} notification")
+                logging.error(e)
 
     def notify_appointment(self, appointment_params: Dict[str, str], dates: List[str]):
         """

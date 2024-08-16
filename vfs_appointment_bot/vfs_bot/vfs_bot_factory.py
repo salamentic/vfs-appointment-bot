@@ -24,11 +24,17 @@ def get_vfs_bot(source_country_code: str, destination_country_code: str) -> VfsB
     """
 
     country_lower = destination_country_code
+    print(country_lower)
 
     if country_lower == "DE":
         from .vfs_bot_de import VfsBotDe
 
         return VfsBotDe(source_country_code)
+    elif country_lower == "JP":
+        from .vfs_bot_jp import VfsBotJp
+
+        print("Starting JP Bot")
+        return VfsBotJp(source_country_code)
     elif country_lower == "IT":
         from .vfs_bot_it import VfsBotIt
 

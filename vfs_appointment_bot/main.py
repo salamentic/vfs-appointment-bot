@@ -83,6 +83,7 @@ def main() -> None:
     args = parser.parse_args()
     source_country_code = args.source_country_code
     destination_country_code = args.destination_country_code
+    repeat_interval = get_config_value("default", "interval")
     try:
         while True:
             vfs_bot = get_vfs_bot(source_country_code, destination_country_code)
@@ -90,7 +91,7 @@ def main() -> None:
             if appointment_found:
                 break
             countdown(
-                int(get_config_value("default", "interval")),
+                int(repeat_interval),
                 "Next appointment check in",
             )
 

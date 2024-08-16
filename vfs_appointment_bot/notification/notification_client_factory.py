@@ -35,6 +35,10 @@ def get_notification_client(channel: str) -> NotificationClient:
         from .email_client import EmailClient
 
         return EmailClient()
+    elif channel == "discord":
+        from .discord_client import DiscordClient
+
+        return DiscordClient()
     else:
         raise UnsupportedNotificationChannelError(
             f"Notification channel '{channel}' is not supported"
