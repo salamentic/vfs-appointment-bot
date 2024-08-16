@@ -4,11 +4,7 @@ import time
 import logging
 from abc import ABC, abstractmethod
 from typing import Dict, List
-
-#import playwright
 from undetected_playwright.sync_api import sync_playwright
-#from playwright.sync_api import sync_playwright
-#from playwright_stealth import stealth_sync
 import undetected_playwright as playwright
 
 from vfs_appointment_bot.utils.config_reader import get_config_value
@@ -91,21 +87,14 @@ class VfsBot(ABC):
                 slow_mo=50,
                 viewport={"width": 1920, "height": 1080},
                 locale="en-US",
+                args=args
             )
-            # Load cookies
-            #with open('cookies(3).json', 'r') as f:
-            #    cookies = json.load(f)
-            #    browser.add_cookies(cookies)
 
             page = browser.new_page()
-            #page.evaluate("localStorage.clear()")
-            #page.evaluate("sessionStorage.clear()")
 
             page.goto(vfs_url)
-            page.wait_for_load_state('networkidle')
             
-            # Click the checkbox
-            self.pre_login_steps(page)
+            #self.pre_login_steps(page)
 
             try:
                 self.login(page, email_id, password)
@@ -167,7 +156,7 @@ class VfsBot(ABC):
 
     def notify_no_appointment(self):
         channels = get_config_value("notification", "channels")
-        message = f"No appointments at {time.now()}"
+        message = f"No appointments at {time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime())}"
         if len(channels) == 0:
             logging.warning(
                 "No notification channels configured. Skipping notification."

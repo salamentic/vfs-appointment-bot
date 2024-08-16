@@ -62,16 +62,32 @@ class VfsBotJp(VfsBot):
         """
 
         # Manually get specific input fields, allows for most compatibility
-        email_input = page.locator("#email")
-        password_input = page.locator("#password")
-
         # Sleep 10 seconds to account for verification time from cloudflare
         # TODO: Automate this, currently the iframe makes it hard to wait for the checkbox
         time.sleep(10)
+        email_input = page.locator("#email")
+        password_input = page.locator("#password")
 
-        # Click the cloudflare prompt
-        # Assume a viewport of 1920, 1080
+        print("Logging in")
+
+        # Viewport on which cloudflare bypass is calibrated on
+        cloudflare_viewport = {"width": 1920, "height": 1080},
+        original_viewport = page.viewport_size
+
+        # Flag to see if change needs to be made
+        mod_viewport_flag = original_viewport != cloudflare_viewport
+
+        # Only change the viewport if it is not the intended dimensions
+        if mod_viewport_flag:
+            page.set_viewport_size(cloudflare_viewport)
+
+        # Click the cloudflare security challenge prompt
+        # Calibrated for a viewport of 1920, 1080
         page.mouse.click(741+19,429+22.5)
+
+        # Only change the viewport back if it is not the intended dimensions
+        if mod_viewport_flag:
+            page.set_viewport_size(original_viewport)
 
         email_input.click()
         email_input.fill(email_id)
