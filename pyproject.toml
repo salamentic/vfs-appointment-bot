@@ -21,7 +21,9 @@ build-backend = "poetry.core.masonry.api"
 # Dependencies
 [tool.poetry.dependencies]
 python = "^3.9"
-playwright = "^1.43.0"
+undetected-playwright = "0.3.0"
+undetected-playwright-patch = "1.40.0.post1700587210000"
+playwright = "1.40.0"
 playwright-stealth = "^1.0.6"
 twilio = "^9.0.4"
 tqdm = "^4.66.2"
