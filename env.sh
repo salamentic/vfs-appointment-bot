@@ -11,8 +11,8 @@ export VFS_HEADLESS=false
 export VFS_CHANNELS="discord"
 
 # VFS Credential
-export VFS_EMAIL="***REMOVED***"
-export VFS_PASSWORD="***REMOVED***"
+export VFS_EMAIL="youremail"
+export VFS_PASSWORD="yourpass"
 
 # Discord Configuration
 export DISCORD_URL="https://discord.com/api/webhooks/1273733818439700531/4xYoczIYBbGpdpSIpxgY1ikQ-IRLYLMqqbVSHb4-tyyvWZBUzsTYEibBVM4wck897J3D"
