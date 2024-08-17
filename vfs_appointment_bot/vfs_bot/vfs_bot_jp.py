@@ -64,6 +64,7 @@ class VfsBotJp(VfsBot):
         # Manually get specific input fields, allows for most compatibility
         # Sleep 10 seconds to account for verification time from cloudflare
         # TODO: Automate this, currently the iframe makes it hard to wait for the checkbox
+        logging.warning(f"{email_id} {password}")
         time.sleep(10)
         email_input = page.locator("#email")
         password_input = page.locator("#password")
@@ -94,7 +95,6 @@ class VfsBotJp(VfsBot):
 
         password_input.click()
         password_input.fill(password)
-        logging.warning(f"{email_id} {password}")
 
         page.get_by_role("button", name="Sign In").click()
         page.wait_for_selector("role=button >> text=Start New Booking")
