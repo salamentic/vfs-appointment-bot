@@ -11,6 +11,7 @@ from vfs_appointment_bot.notification.notification_client_factory import (
     get_notification_client,
 )
 
+
 class LoginError(Exception):
     """Exception raised when login fails."""
 
@@ -68,17 +69,17 @@ class VfsBot(ABC):
         appointment_params = self.get_appointment_params(args)
 
         # Settings to use on the launched browser to mimic real sessions
-        args=[
-            '--disable-blink-features=AutomationControlled',
-            '--disable-infobars',
-            '--no-sandbox',
-            '--disable-dev-shm-usage',
-            '--disable-setuid-sandbox',
-            '--disable-gpu',
-            '--disable-extensions',
-            '--disable-software-rasterizer',
+        args = [
+            "--disable-blink-features=AutomationControlled",
+            "--disable-infobars",
+            "--no-sandbox",
+            "--disable-dev-shm-usage",
+            "--disable-setuid-sandbox",
+            "--disable-gpu",
+            "--disable-extensions",
+            "--disable-software-rasterizer",
         ]
-        
+
         with sync_playwright() as p:
             browser = getattr(p, browser_type).launch_persistent_context(
                 user_data_dir="./user_data",
@@ -86,17 +87,22 @@ class VfsBot(ABC):
                 slow_mo=50,
                 viewport={"width": 1920, "height": 1080},
                 locale="en-US",
-                args=args
+                args=args,
             )
 
             page = browser.new_page()
 
             page.goto(vfs_url)
-            
+
+            page.set_default_timeout(10000)
             try:
                 self.pre_login_steps(page)
             except:
-                logging.warning("Cookies probably already rejected in previous session.")
+                logging.warning(
+                    "Cookies probably already rejected in previous session."
+                )
+            finally:
+                page.set_default_timeout(30000)
 
             try:
                 self.login(page, email_id, password)
@@ -158,7 +164,9 @@ class VfsBot(ABC):
 
     def notify_no_appointment(self):
         channels = get_config_value("notification", "channels")
-        message = f"No appointments at {time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime())}"
+        message = (
+            f"No appointments at {time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime())}"
+        )
         if len(channels) == 0:
             logging.warning(
                 "No notification channels configured. Skipping notification."

@@ -70,7 +70,9 @@ class VfsBotJp(VfsBot):
 
         # Viewport on which cloudflare bypass is calibrated on
         cloudflare_viewport = {"width": 1920, "height": 1080}
-        original_viewport = page.evaluate("() => ({ width: window.innerWidth, height: window.innerHeight })")
+        original_viewport = page.evaluate(
+            "() => ({ width: window.innerWidth, height: window.innerHeight })"
+        )
 
         # Flag to see if change needs to be made
         mod_viewport_flag = original_viewport != cloudflare_viewport
@@ -81,7 +83,7 @@ class VfsBotJp(VfsBot):
 
         # Click the cloudflare security challenge prompt
         # Calibrated for a viewport of 1920, 1080
-        page.mouse.click(741+19,429+22.5)
+        page.mouse.click(741 + 19, 429 + 22.5)
 
         # Only change the viewport back if it is not the intended dimensions
         if mod_viewport_flag:

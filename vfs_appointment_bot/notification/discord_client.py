@@ -42,10 +42,10 @@ class DiscordClient(NotificationClient):
         self.__send_message(message, url, username)
 
     def __get_data(
-            self,
-            message: str,
-            username: Optional[str] = None,
-        ) -> dict[str,str]:
+        self,
+        message: str,
+        username: Optional[str] = None,
+    ) -> dict[str, str]:
         """
         Generates payload to send to webhook
 
@@ -57,8 +57,8 @@ class DiscordClient(NotificationClient):
         if "Found" in message:
             message = "@everyone " + message
         data = {
-            "content" : message,
-            "username" : username,
+            "content": message,
+            "username": username,
         }
         return data
 
@@ -69,7 +69,7 @@ class DiscordClient(NotificationClient):
         username: str,
     ) -> None:
         """
-        Sends a discord message to given webhook url, using a default username 
+        Sends a discord message to given webhook url, using a default username
 
         Args:
             message (str): The message content to be sent.
