@@ -1,6 +1,7 @@
 FROM python:3.10-slim
 WORKDIR /app
 COPY pyproject.toml .
+COPY poetry.lock .
 
 RUN apt-get update && apt-get install -y \
     xvfb \
