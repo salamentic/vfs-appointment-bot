@@ -107,11 +107,12 @@ class VfsBot(ABC):
             try:
                 self.login(page, email_id, password)
                 logging.info("Logged in successfully")
-            except Exception:
+            except Exception as e:
                 browser.close()
                 raise LoginError(
                     "\033[1;31mLogin failed. "
-                    + "Please verify your username and password by logging in to the browser and try again.\033[0m"
+                    + "Please verify your username and password by logging in to the browser and try again.\033[0m",
+                    str(e)
                 )
 
             logging.info(f"Checking appointments for {appointment_params}")
