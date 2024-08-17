@@ -14,4 +14,4 @@ COPY . .
 #ARG CONFIG_FILE=/app/config/config.ini
 #COPY ${CONFIG_FILE} /app/config/config.ini
 ENV VFS_BOT_CONFIG_PATH=/app/config/config.ini
-CMD ["python3", "-m", "vfs-appointment-bot", "-sc", "AE", "-dc", "JP", "-ap", "visa_center=Dubai,visa_category=Single,visa_sub_category=General"]
+CMD ["poetry", "run", "vfs-appointment-bot", "-sc", "AE", "-dc", "JP", "-ap", "visa_center=Dubai,visa_category=Single,visa_sub_category=General"]
