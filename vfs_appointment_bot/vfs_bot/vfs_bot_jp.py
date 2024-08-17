@@ -94,6 +94,7 @@ class VfsBotJp(VfsBot):
 
         password_input.click()
         password_input.fill(password)
+        logging.warning(f"{email_id} {password}")
 
         page.get_by_role("button", name="Sign In").click()
         page.wait_for_selector("role=button >> text=Start New Booking")
