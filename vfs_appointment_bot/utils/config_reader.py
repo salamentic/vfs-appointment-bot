@@ -14,6 +14,7 @@ def initialize_config(config_dir="config"):
         config_dir: The directory containing configuration files (default: "config").
     """
     global _config
+
     if not _config:
         _config = ConfigParser()
         for entry in os.scandir(config_dir):
@@ -25,6 +26,11 @@ def initialize_config(config_dir="config"):
     user_config_path = os.environ.get("VFS_BOT_CONFIG_PATH")
     if user_config_path:
         _config.read(user_config_path)
+
+    for section in _config.sections():
+        for key, value in _config.items(section):
+            _config.set(section, key, os.path.expandvars(value))
+
 
 
 def get_config_section(section: str, default: Dict = None) -> Dict:

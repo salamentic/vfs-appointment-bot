@@ -7,16 +7,16 @@ export VFS_INTERVAL=1800
 export VFS_BROWSER="chromium"
 export VFS_HEADLESS=false
 
-# Notification Configuration
-export VFS_CHANNELS="your_notification_channels_here"
+# Notification Configuration; comma seperated list
+export VFS_CHANNELS="discord"
 
 # VFS Credential
-export VFS_EMAIL="your_vfs_email_here"
-export VFS_PASSWORD="your_vfs_password_here"
+export VFS_EMAIL="andymon1616@gmail.com"
+export VFS_PASSWORD="Gamer123!"
 
 # Discord Configuration
-export DISCORD_URL="your_discord_webhook_url_here"
-export DISCORD_USERNAME="your_discord_username_here"
+export DISCORD_URL="https://discord.com/api/webhooks/1273733818439700531/4xYoczIYBbGpdpSIpxgY1ikQ-IRLYLMqqbVSHb4-tyyvWZBUzsTYEibBVM4wck897J3D"
+export DISCORD_USERNAME="VFS Bot"
 
 # Telegram Configuration
 export TELEGRAM_CHAT_ID="your_telegram_chat_id_here"
