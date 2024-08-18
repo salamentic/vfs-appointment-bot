@@ -64,7 +64,8 @@ class VfsBotJp(VfsBot):
         # Manually get specific input fields, allows for most compatibility
         # Sleep 10 seconds to account for verification time from cloudflare
         # TODO: Automate this, currently the iframe makes it hard to wait for the checkbox
-        time.sleep(10)
+        print(page.content())
+        time.sleep(30)
         email_input = page.locator("#email")
         password_input = page.locator("#password")
 

@@ -1,6 +1,7 @@
 FROM python:3.10-slim
 WORKDIR /app
 COPY pyproject.toml .
+COPY poetry.lock .
 
 RUN apt-get update && apt-get install -y \
     xvfb \
@@ -22,4 +23,4 @@ ENV VFS_BOT_CONFIG_PATH=/app/config/config.ini
 RUN chmod +x /app/.venv/lib/python3.10/site-packages/undetected_playwright/driver/playwright.sh
 RUN chmod +x /app/.venv/lib/python3.10/site-packages/undetected_playwright/driver/node
 
-CMD ["sh", "-c", "xvfb-run -a poetry run vfs-appointment-bot -sc AE -dc JP -ap visa_center=Dubai,visa_category=Single,visa_sub_category=General > /dev/stdout 2>/dev/stderr"]
+CMD ["sh", "-c", "xvfb-run -a --server-args='-screen 0 2048x2048x24' poetry run vfs-appointment-bot -sc AE -dc JP -ap visa_center=Dubai,visa_category=Single,visa_sub_category=General > /dev/stdout 2>/dev/stderr"]
