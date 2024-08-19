@@ -15,46 +15,44 @@
 ![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/ranjan-mohanty/vfs-appointment-bot)
 [![Twitter](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Franjan-mohanty%2Fvfs-appointment-bot)](https://twitter.com/intent/tweet?text=Check%20this%20out%20&url=https%3A%2F%2Fgithub.com%2Franjan-mohanty%2Fvfs-appointment-bot)
 
-This Python script(**vfs-appointment-bot**) automates checking for appointments at VFS Global portal in a specified country.
+This Python script(**vfs-appointment-bot**) automates checking for appointments at VFS Global portal in a specified country. This is a fork from the original to work purely in Docker and works to bypass the CloudFlare security challenge, via use of the undetected chromium driver and calibrated mouse clicks for the captcha. 
 
 ## Installation
+Unlike the original, this script works either with docker (for a production environment/server) or manual installation.
 
-The `vfs-appointment-bot` script can be installed using two methods:
-
-### 1. Using pip
+### 1. Using Docker
 
 It is the preferred method for installing `vfs-appointment-bot`. Here's how to do it:
 
-1. **Create a virtual environment (Recommended):**
+1. **Go into the project directory**
 
    ```bash
-   python3 -m venv venv
+   cd vfs-appointment-bot
    ```
 
    This creates a virtual environment named `venv` to isolate project dependencies from your system-wide Python installation (**recommended**).
 
-2. **Activate the virtual environment:**
+2. **Build the image**
 
    **Linux/macOS:**
 
    ```bash
-   source venv/bin/activate
+    sudo docker build -t vfs-bot-image .
    ```
 
-   **Windows:**
-
+3. **Configure environment**
+   More about this is documented in the environment section. For docker, edit the env.sh file with your credentials and notification settings. Finally, run:
    ```bash
-   venv\Scripts\activate
+   ./convert_env_sh_to_list.sh
    ```
+   to generate the env.list you want to pass to docker or your server management service of choice.
 
-3. **Install using pip:**
-
+4. **Run the docker container**
+   Note that you must edit the Dockerfile's last line to run with the command line arguments you wish to have. Look at the Command Line Arguments section for more info on how to do so.
    ```bash
-   pip install vfs-appointment-bot
+   sudo docker run --env-file=env.list vfs-bot-image
    ```
-
-   This will download and install the `vfs-appointment-bot` package and its dependencies into your Python environment.
-
+   
 ### 2. Manual Installation
 
 For an alternative installation method, clone the source code from the project repository and install it manually.
@@ -107,21 +105,18 @@ For an alternative installation method, clone the source code from the project r
    ```
 
 ## Configuration
+1. Update the vfs credentials and notification channel preferences in env.sh. See the [Notification Channels](#notification-channels) section for details on configuring email, Twilio, and Telegram notifications. For discord, simply setup a webhook and populate the required field with the webhook URL.
+2. If running with docker, run:
+```bash
+   ./convert_env_sh_to_list.sh
+```
+to get the env.list to pass to your docker image.
 
-1. Download the [`config/config.ini`](https://raw.githubusercontent.com/ranjan-mohanty/vfs-appointment-bot/main/config/config.ini) template.
-
-   ```bash
-   curl -L https://raw.githubusercontent.com/ranjan-mohanty/vfs-appointment-bot/main/config/config.ini -o config.ini
-   ```
-
-2. Update the vfs credentials and notification channel preferences. See the [Notification Channels](#notification-channels) section for details on configuring email, Twilio, and Telegram notifications.
-3. Export the path of the config file to the environment variable `VFS_BOT_CONFIG_PATH`
-
-   ```bash
-   export VFS_BOT_CONFIG_PATH=<your-config-path>/config.ini
-   ```
-
-**If you installed the script by cloning the repository (manual installation)**, you can directly edit the values in `config/config.ini`.
+If you're running the script manually on linux, you must do:
+```bash
+source env.sh
+```
+Alternatively, you can also directly edit the config variables in `config/config.ini` which requires to env.sh or env.list configuration. 
 
 ## Usage
 
@@ -199,6 +194,7 @@ The following table lists currently supported countries and their corresponding 
 | Country                    | Appointment Parameters                                      |
 | -------------------------- | ----------------------------------------------------------- |
 | India(IN) - Germany(DE)    | visa_category, visa_sub_category, visa_center               |
+| UAE(AE) - Japan    (JP)    | visa_category, visa_sub_category, visa_center               |
 | Iraq(IQ) - Germany(DE)     | visa_category, visa_sub_category, visa_center               |
 | Morocco(MA) - Italy(IT)    | visa_category, visa_sub_category, visa_center, payment_mode |
 | Azerbaijan(AZ) - Italy(IT) | visa_category, visa_sub_category, visa_center               |
